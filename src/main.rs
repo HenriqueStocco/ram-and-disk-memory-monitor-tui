@@ -1,21 +1,6 @@
-extern crate sysinfo;
 use sysinfo::{Disks, System};
 
-fn convert_to_giga(value: &u64) -> f64 {
-    let multiplier = 1_000.00;
-    let value_to_f64 = *value as f64;
-    let converted_value = ((value_to_f64 / multiplier) / multiplier) / multiplier;
-
-    return converted_value;
-}
-
-fn print_section(section_name: &str, def: fn()) {
-    println!("-------- {} --------\n", section_name);
-
-    def();
-
-    println!("");
-}
+mod utils;
 
 fn print_sysinfo() {
     println!("OS: {}", System::name().unwrap());
@@ -30,8 +15,8 @@ fn print_meminfo() {
     sys.refresh_all();
     let disks = Disks::new_with_refreshed_list();
 
-    let total_memory_hr = convert_to_giga(&sys.total_memory());
-    let used_memory_hr = convert_to_giga(&sys.used_memory());
+    let total_memory_hr = utils::convert_to_gb_f64(&sys.total_memory());
+    let used_memory_hr = utils::convert_to_gb_f64(&sys.used_memory());
 
     println!("Total RAM memory: {:.2} Gb", total_memory_hr);
     println!("Used RAM memory: {:.2} Gb", used_memory_hr);
@@ -40,12 +25,12 @@ fn print_meminfo() {
         println!(
             "Disk: {}\nTotal space: {:.2} Gb",
             disk.name().to_str().unwrap(),
-            convert_to_giga(&disk.total_space())
+            utils::convert_to_gb_f64(&disk.total_space())
         );
     }
 }
 
 fn main() {
-    print_section("Memory Info", print_meminfo);
-    print_section("System Info", print_sysinfo);
+    utils::print_section_layout("Memory Info", print_meminfo);
+    utils::print_section_layout("System Info", print_sysinfo);
 }
