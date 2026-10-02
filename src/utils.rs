@@ -5,11 +5,3 @@ pub fn convert_to_gb_f64(value: &u64) -> f64 {
 
     return converted_value;
 }
-
-pub fn print_section_layout(sec_name: &str, func: fn()) {
-    println!("-------- {} --------\n", sec_name);
-
-    func();
-
-    println!("");
-}
